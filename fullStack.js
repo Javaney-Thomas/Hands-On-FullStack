@@ -1,171 +1,171 @@
-// 'use strict';
+'use strict';
 
-// const fs = require('fs');
-// const path = require('path');
-// const { Pool } = require('pg'); //NPM installed before this from nodemon
-// const petsPath = path.join(__dirname, 'pets.json');
+const fs = require('fs');
+const path = require('path');
+const { Pool } = require('pg'); //NPM installed before this from nodemon
+const actorsPath = path.join(__dirname, 'actors.json');
 
-// const express = require('express');//to use express
-// const bodyParser = require('body-parser');//to use parser.json
-// const app = express();
+const express = require('express');//to use express
+const bodyParser = require('body-parser');//to use parser.json
+const app = express();
 
-// const port = process.env.PORT || 8000;//set the port and or look for any alternatives
+const port = process.env.PORT || 8000;//set the port and or look for any alternatives
 
-// app.use(bodyParser.json());
-
-
-
-// app.get('/pets', (_req, res, next) => {
-//   fs.readFile(petsPath, 'utf8', (err, petsJSON) => {
-//     if (err) {
-//       return next(err);
-//     }
-
-//     const pets = JSON.parse(petsJSON);
-
-//     res.send(pets);
-//   });
-// });
+app.use(bodyParser.json());
 
 
-// app.get('/pets/:id', (req, res, next) => {
-//   fs.readFile(petsPath, 'utf8', (err, petsJSON) => {
-//     if (err) {
-//       return next(err);
-//     }
 
-//     const id = Number.parseInt(req.params.id);
-//     const pets = JSON.parse(petsJSON);
+app.get('/actors', (_req, res, next) => {
+  fs.readFile(actorsPath, 'utf8', (err, actorsJSON) => {
+    if (err) {
+      return next(err);
+    }
 
-//     if (id < 0 || id >= pets.length || Number.isNaN(id)) {
-//       return res.sendStatus(404);
-//     }
+    const actors = JSON.parse(actorsJSON);
 
-//     res.send(pets[id]);
-//   });
-// });
+    res.send(actors);
+  });
+});
 
 
-// app.post('/pets', (req, res, next) => {
-//   fs.readFile(petsPath, 'utf8', (readErr, petsJSON) => {
-//     if (readErr) {
-//       return next(readErr);
-//     }
+app.get('/actors/:id', (req, res, next) => {
+  fs.readFile(actorsPath, 'utf8', (err, actorsJSON) => {
+    if (err) {
+      return next(err);
+    }
 
-//     const pets = JSON.parse(petsJSON);
-//     const age = Number.parseInt(req.body.age);
-//     const kind = req.body.kind;
-//     const name = req.body.name;
+    const id = Number.parseInt(req.params.id);
+    const actors = JSON.parse(actorsJSON);
 
-//     if (Number.isNaN(age) || !kind || !name) {
-//       return res.sendStatus(400);
-//     }
+    if (id < 0 || id >= actors.length || Number.isNaN(id)) {
+      return res.sendStatus(404);
+    }
 
-//     const pet = { age, kind, name };
-
-//     pets.push(pet);
-
-//     const newPetsJSON = JSON.stringify(pets);
-
-//     fs.writeFile(petsPath, newPetsJSON, (writeErr) => {
-//       if (writeErr) {
-//         return next(writeErr);
-//       }
-
-//       res.send(pet);
-//     });
-//   });
-// });
+    res.send(actors[id]);
+  });
+});
 
 
-// app.patch('/pets/:id', (req, res, next) => {
-//   fs.readFile(petsPath, 'utf8', (readErr, petsJSON) => {
-//     if (readErr) {
-//       return next(readErr);
-//     }
+app.post('/actors', (req, res, next) => {
+  fs.readFile(actorsPath, 'utf8', (readErr, actorsJSON) => {
+    if (readErr) {
+      return next(readErr);
+    }
 
-//     const id = Number.parseInt(req.params.id);
-//     const pets = JSON.parse(petsJSON);
+    const actors = JSON.parse(actorsJSON);
+    const age = Number.parseInt(req.body.age);
+    const kind = req.body.kind;
+    const name = req.body.name;
 
-//     if (id < 0 || id >= pets.length || Number.isNaN(id)) {
-//       return res.sendStatus(404);
-//     }
+    if (Number.isNaN(age) || !kind || !name) {
+      return res.sendStatus(400);
+    }
 
-//     const pet = pets[id];
-//     const age = Number.parseInt(req.body.age);
-//     const kind = req.body.kind;
-//     const name = req.body.name;
+    const pet = { age, kind, name };
 
-//     if (!Number.isNaN(age)) {
-//       pet.age = age;
-//     }
+    actors.push(pet);
 
-//     if (kind) {
-//       pet.kind = kind;
-//     }
+    const newactorsJSON = JSON.stringify(actors);
 
-//     if (name) {
-//       pet.name = name;
-//     }
+    fs.writeFile(actorsPath, newactorsJSON, (writeErr) => {
+      if (writeErr) {
+        return next(writeErr);
+      }
 
-//     const newPetsJSON = JSON.stringify(pets);
-
-//     fs.writeFile(petsPath, newPetsJSON, (writeErr) => {
-//       if (writeErr) {
-//         return next(writeErr);
-//       }
-
-//       res.send(pet);
-//     });
-//   });
-// });
+      res.send(pet);
+    });
+  });
+});
 
 
-// app.delete('/pets/:id', (req, res, next) => {
-//   fs.readFile(petsPath, 'utf8', (readErr, petsJSON) => {
-//     if (readErr) {
-//       return next(readErr);
-//     }
+app.patch('/actors/:id', (req, res, next) => {
+  fs.readFile(actorsPath, 'utf8', (readErr, actorsJSON) => {
+    if (readErr) {
+      return next(readErr);
+    }
 
-//     const id = Number.parseInt(req.params.id);
-//     const pets = JSON.parse(petsJSON);
+    const id = Number.parseInt(req.params.id);
+    const actors = JSON.parse(actorsJSON);
 
-//     if (id < 0 || id >= pets.length || Number.isNaN(id)) {
-//       return res.sendStatus(404);
-//     }
+    if (id < 0 || id >= actors.length || Number.isNaN(id)) {
+      return res.sendStatus(404);
+    }
 
-//     const pet = pets.splice(id, 1)[0];
-//     const newPetsJSON = JSON.stringify(pets);
+    const pet = actors[id];
+    const age = Number.parseInt(req.body.age);
+    const kind = req.body.kind;
+    const name = req.body.name;
 
-//     fs.writeFile(petsPath, newPetsJSON, (writeErr) => {
-//       if (writeErr) {
-//         return next(writeErr);
-//       }
+    if (!Number.isNaN(age)) {
+      pet.age = age;
+    }
 
-//       res.send(pet);
-//     });
-//   });
-// });
+    if (kind) {
+      pet.kind = kind;
+    }
 
+    if (name) {
+      pet.name = name;
+    }
 
-// app.get('/boom', (_req, _res, next) => {
-//   next(new Error('BOOM!'));
-// });
+    const newactorsJSON = JSON.stringify(actors);
 
+    fs.writeFile(actorsPath, newactorsJSON, (writeErr) => {
+      if (writeErr) {
+        return next(writeErr);
+      }
 
-// app.use((_req, res) => {
-//   res.sendStatus(404);
-// });
-
-// app.use((err, _req, res, _next) => {
-//   console.error(err.stack);
-//   res.sendStatus(500);
-// });
-
-
-// app.listen(port, () => {
-//   console.log('Listening on port', port);
-// });
+      res.send(pet);
+    });
+  });
+});
 
 
-// module.exports = app;
+app.delete('/actors/:id', (req, res, next) => {
+  fs.readFile(actorsPath, 'utf8', (readErr, actorsJSON) => {
+    if (readErr) {
+      return next(readErr);
+    }
+
+    const id = Number.parseInt(req.params.id);
+    const actors = JSON.parse(actorsJSON);
+
+    if (id < 0 || id >= actors.length || Number.isNaN(id)) {
+      return res.sendStatus(404);
+    }
+
+    const pet = actors.splice(id, 1)[0];
+    const newactorsJSON = JSON.stringify(actors);
+
+    fs.writeFile(actorsPath, newactorsJSON, (writeErr) => {
+      if (writeErr) {
+        return next(writeErr);
+      }
+
+      res.send(pet);
+    });
+  });
+});
+
+
+app.get('/boom', (_req, _res, next) => {
+  next(new Error('BOOM!'));
+});
+
+
+app.use((_req, res) => {
+  res.sendStatus(404);
+});
+
+app.use((err, _req, res, _next) => {
+  console.error(err.stack);
+  res.sendStatus(500);
+});
+
+
+app.listen(port, () => {
+  console.log('Listening on port', port);
+});
+
+
+module.exports = app;
