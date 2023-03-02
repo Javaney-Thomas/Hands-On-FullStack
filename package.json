@@ -1,0 +1,23 @@
+{
+  "name": "fullstackpage",
+  "version": "1.0.0",
+  "description": "",
+  "main": "fullStack.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Javaney-Thomas/Hands-On-FullStack.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Javaney-Thomas/Hands-On-FullStack/issues"
+  },
+  "homepage": "https://github.com/Javaney-Thomas/Hands-On-FullStack#readme",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
