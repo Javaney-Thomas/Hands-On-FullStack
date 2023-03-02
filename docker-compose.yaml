@@ -41,7 +41,7 @@ services:
             POSTGRES_USER: postgres
             POSTGRES_PASSWORD: password
             POSTGRES_PORT: 5432
-            POSTGRES-FullStack: FullStack 
+            POSTGRES_DB: onepiece 
             PGDATA: /var/lib/postgresql/data
         ports:
             - "5432:5432"
@@ -56,7 +56,7 @@ services:
         restart: always
         environment:
             PGADMIN_DEFAULT_EMAIL: javaneyt@icloud.com
-            PGADMIN_DEFAULT_PASSWORD: password
+            PGADMIN_DEFAULT_PASSWORD: strawhats
         ports:
             - "8080:80"
         volumes:
