@@ -19,32 +19,32 @@ services:
         ports:
             - "8000:8000"
             
-        # make sure the postgres-FullStack service starts first
+        # make sure the postgres-db service starts first
         depends_on:
-            - postgres-FullStack
+            - postgres-db
         
         # makes the value "postgres-FullStack" available in process.env.DATABASE_HOST in Node server, 
         # so Pool connects to the container instead of localhost
         environment:
-            DATABASE_HOST: "postgres-FullStack"
+            DATABASE_HOST: "postgres-db"
 
         # Override the entrypoint in the Dockerfile
         command: ["nodemon", "fullstack.js"]
 
 
-    postgres-FullStack:
-        container_name: postgres-FullStack
+    postgres-db: #make sure this matches in the js file
+        container_name: postgres-db
         image: postgres:latest
         restart: always
         environment:
-            DATABASE_HOST: postgres-FullStack
+            DATABASE_HOST: postgres-db
             POSTGRES_USER: postgres
             POSTGRES_PASSWORD: password
             POSTGRES_PORT: 5432
             POSTGRES_DB: onepiece 
             PGDATA: /var/lib/postgresql/data
         ports:
-            - "5432:5432"
+            - "6432:5432"
         volumes:
             - pgdatasource:/var/lib/postgresql/data
 
@@ -62,7 +62,7 @@ services:
         volumes:
             - pgadmin-data:/var/lib/pgadmin
         depends_on:
-            - postgres-FullStack
+            - postgres-db
         
 volumes:
   pgdatasource:

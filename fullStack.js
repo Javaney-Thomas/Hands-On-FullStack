@@ -2,150 +2,156 @@
 
 const fs = require('fs');
 const path = require('path');
-const { Pool } = require('pg'); //NPM installed before this from nodemon
+const { Pool } = require('pg'); //NPM installed before this from nodemon, pg is a library btw
 const actorsPath = path.join(__dirname, 'actors.json');
-
+///
+const DB_HOST = process.env.DATABASE_HOST || "localhost";
+const port = process.env.PORT || 8000;//set the port and or look for any alternatives
 const express = require('express');//to use express
 const bodyParser = require('body-parser');//to use parser.json
 const app = express();
 
-const port = process.env.PORT || 8000;//set the port and or look for any alternatives
-
 app.use(bodyParser.json());
-
-
-
-app.get('/actors', (_req, res, next) => {
-  fs.readFile(actorsPath, 'utf8', (err, actorsJSON) => {
-    if (err) {
-      return next(err);
-    }
-
-    const actors = JSON.parse(actorsJSON);
-
-    res.send(actors);
-  });
+/////
+const pool = new Pool({ //takes an object as an input, passing thisninto pool fior config
+  user: 'postgres',
+  host: DB_HOST,
+  database: 'postgres-db',
+  password: 'password',
+  port: 5432,
 });
 
 
-app.get('/actors/:id', (req, res, next) => {
-  fs.readFile(actorsPath, 'utf8', (err, actorsJSON) => {
-    if (err) {
-      return next(err);
-    }
+app.get('/places', (req, res, next) => {
+    pool.query('SELECT * FROM places', (err, results) => {
+        if(err){
+            return next(err);
+        }
 
-    const id = Number.parseInt(req.params.id);
-    const actors = JSON.parse(actorsJSON);
-
-    if (id < 0 || id >= actors.length || Number.isNaN(id)) {
-      return res.sendStatus(404);
-    }
-
-    res.send(actors[id]);
-  });
+        let row = results.rows;
+        console.log(row);
+        res.send(row);
+    })
 });
 
 
-app.post('/actors', (req, res, next) => {
-  fs.readFile(actorsPath, 'utf8', (readErr, actorsJSON) => {
-    if (readErr) {
-      return next(readErr);
-    }
+// app.get('/actors/:id', (req, res, next) => {
+//   fs.readFile(actorsPath, 'utf8', (err, actorsJSON) => {
+//     if (err) {
+//       return next(err);
+//     }
 
-    const actors = JSON.parse(actorsJSON);
-    const age = Number.parseInt(req.body.age);
-    const kind = req.body.kind;
-    const name = req.body.name;
+//     const id = Number.parseInt(req.params.id);
+//     const actors = JSON.parse(actorsJSON);
 
-    if (Number.isNaN(age) || !kind || !name) {
-      return res.sendStatus(400);
-    }
+//     if (id < 0 || id >= actors.length || Number.isNaN(id)) {
+//       return res.sendStatus(404);
+//     }
 
-    const pet = { age, kind, name };
+//     res.send(actors[id]);
+//   });
+// });
 
-    actors.push(pet);
+// app.post('/actors', (req, res, next) => {
+//   fs.readFile(actorsPath, 'utf8', (readErr, actorsJSON) => {
+//     if (readErr) {
+//       return next(readErr);
+//     }
 
-    const newactorsJSON = JSON.stringify(actors);
+//     const actors = JSON.parse(actorsJSON);
+//     const age = Number.parseInt(req.body.age);
+//     const kind = req.body.kind;
+//     const name = req.body.name;
 
-    fs.writeFile(actorsPath, newactorsJSON, (writeErr) => {
-      if (writeErr) {
-        return next(writeErr);
-      }
+//     if (Number.isNaN(age) || !kind || !name) {
+//       return res.sendStatus(400);
+//     }
 
-      res.send(pet);
-    });
-  });
-});
+//     const actor = { age, kind, name };
 
+//     actors.push(actor);
 
-app.patch('/actors/:id', (req, res, next) => {
-  fs.readFile(actorsPath, 'utf8', (readErr, actorsJSON) => {
-    if (readErr) {
-      return next(readErr);
-    }
+//     const newactorsJSON = JSON.stringify(actors);
 
-    const id = Number.parseInt(req.params.id);
-    const actors = JSON.parse(actorsJSON);
+//     fs.writeFile(actorsPath, newactorsJSON, (writeErr) => {
+//       if (writeErr) {
+//         return next(writeErr);
+//       }
 
-    if (id < 0 || id >= actors.length || Number.isNaN(id)) {
-      return res.sendStatus(404);
-    }
-
-    const pet = actors[id];
-    const age = Number.parseInt(req.body.age);
-    const kind = req.body.kind;
-    const name = req.body.name;
-
-    if (!Number.isNaN(age)) {
-      pet.age = age;
-    }
-
-    if (kind) {
-      pet.kind = kind;
-    }
-
-    if (name) {
-      pet.name = name;
-    }
-
-    const newactorsJSON = JSON.stringify(actors);
-
-    fs.writeFile(actorsPath, newactorsJSON, (writeErr) => {
-      if (writeErr) {
-        return next(writeErr);
-      }
-
-      res.send(pet);
-    });
-  });
-});
+//       res.send(actor);
+//     });
+//   });
+// });
 
 
-app.delete('/actors/:id', (req, res, next) => {
-  fs.readFile(actorsPath, 'utf8', (readErr, actorsJSON) => {
-    if (readErr) {
-      return next(readErr);
-    }
+// app.patch('/actors/:id', (req, res, next) => {
+//   fs.readFile(actorsPath, 'utf8', (readErr, actorsJSON) => {
+//     if (readErr) {
+//       return next(readErr);
+//     }
 
-    const id = Number.parseInt(req.params.id);
-    const actors = JSON.parse(actorsJSON);
+//     const id = Number.parseInt(req.params.id);
+//     const actors = JSON.parse(actorsJSON);
 
-    if (id < 0 || id >= actors.length || Number.isNaN(id)) {
-      return res.sendStatus(404);
-    }
+//     if (id < 0 || id >= actors.length || Number.isNaN(id)) {
+//       return res.sendStatus(404);
+//     }
 
-    const pet = actors.splice(id, 1)[0];
-    const newactorsJSON = JSON.stringify(actors);
+//     const pet = actors[id];
+//     const age = Number.parseInt(req.body.age);
+//     const kind = req.body.kind;
+//     const name = req.body.name;
 
-    fs.writeFile(actorsPath, newactorsJSON, (writeErr) => {
-      if (writeErr) {
-        return next(writeErr);
-      }
+//     if (!Number.isNaN(age)) {
+//       pet.age = age;
+//     }
 
-      res.send(pet);
-    });
-  });
-});
+//     if (kind) {
+//       pet.kind = kind;
+//     }
+
+//     if (name) {
+//       pet.name = name;
+//     }
+
+//     const newactorsJSON = JSON.stringify(actors);
+
+//     fs.writeFile(actorsPath, newactorsJSON, (writeErr) => {
+//       if (writeErr) {
+//         return next(writeErr);
+//       }
+
+//       res.send(pet);
+//     });
+//   });
+// });
+
+
+// app.delete('/actors/:id', (req, res, next) => {
+//   fs.readFile(actorsPath, 'utf8', (readErr, actorsJSON) => {
+//     if (readErr) {
+//       return next(readErr);
+//     }
+
+//     const id = Number.parseInt(req.params.id);
+//     const actors = JSON.parse(actorsJSON);
+
+//     if (id < 0 || id >= actors.length || Number.isNaN(id)) {
+//       return res.sendStatus(404);
+//     }
+
+//     const pet = actors.splice(id, 1)[0];
+//     const newactorsJSON = JSON.stringify(actors);
+
+//     fs.writeFile(actorsPath, newactorsJSON, (writeErr) => {
+//       if (writeErr) {
+//         return next(writeErr);
+//       }
+
+//       res.send(pet);
+//     });
+//   });
+// });
 
 
 app.get('/boom', (_req, _res, next) => {
