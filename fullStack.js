@@ -3,35 +3,40 @@
 const fs = require('fs');
 const path = require('path');
 const { Pool } = require('pg'); //NPM installed before this from nodemon, pg is a library btw
-const actorsPath = path.join(__dirname, 'actors.json');
+const actorsPath = path.join(__dirname, 'actors.json'); //check dirname
 ///
-const DB_HOST = process.env.DATABASE_HOST || "localhost";
-const port = process.env.PORT || 8000;//set the port and or look for any alternatives
+const DB_HOST = process.env.DATABASE_HOST || 'localhost' //check docs and purpose
+const cors = require('cors')
+//app.use(cors());
+const port = 8100; //process.env.PORT || 8100;//set the port and or look for any alternatives for express
 const express = require('express');//to use express
-const bodyParser = require('body-parser');//to use parser.json
 const app = express();
+app.use(express.json());
+//const bodyParser = require('body-parser');//to use parser.json
+//chrck body parser
+//app.use(bodyParser.json());
 
-app.use(bodyParser.json());
-/////
-const pool = new Pool({ //takes an object as an input, passing thisninto pool fior config
+
+/////////////POSTGRES or contianers Possibly/////////
+const pool = new Pool({ //takes an object as an input, passing this into pool for config
   user: 'postgres',
   host: DB_HOST,
-  database: 'postgres-db',
+  database: 'onepiece',
   password: 'password',
   port: 5432,
 });
 
+/////////////////GET Table DB Places///////////////
+app.get('/api/places', (req, res, next) => {
+  pool.query('SELECT * FROM places', (err, results) => {
+    if (err) {
+      return next(err);
+    }
 
-app.get('/places', (req, res, next) => {
-    pool.query('SELECT * FROM places', (err, results) => {
-        if(err){
-            return next(err);
-        }
-
-        let row = results.rows;
-        console.log(row);
-        res.send(row);
-    })
+    let row = results.rows;
+    console.log(row);
+    res.send(row);
+  })
 });
 
 
@@ -156,7 +161,7 @@ app.get('/places', (req, res, next) => {
 
 app.get('/boom', (_req, _res, next) => {
   next(new Error('BOOM!'));
-});
+}); 
 
 
 app.use((_req, res) => {
@@ -168,9 +173,11 @@ app.use((err, _req, res, _next) => {
   res.sendStatus(500);
 });
 
+app.use(cors({ origin: "*" }))
 
 app.listen(port, () => {
   console.log('Listening on port', port);
+  console.log('DB Host:', DB_HOST);
 });
 
 

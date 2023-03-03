@@ -5,11 +5,13 @@ WORKDIR /app
 # where available (npm@5+)
 COPY package*.json ./
 RUN npm install -g nodemon  
+RUN npm install -g express
 RUN npm install
 # Bundle app source and copy the files to the image
 COPY . .
 # Expose the post so programs outside Docker 
 # (Browser, Postman, etc) can access the server port 8000 
-EXPOSE 8000
+EXPOSE 8100  
+# from 8k
 # When the image is finally run in a container, execute this:
 CMD [ "nodemon", "fullStack.js" ]
